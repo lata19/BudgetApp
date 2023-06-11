@@ -1,4 +1,5 @@
 .venv
 BudgetAppVENV/
-_pycache_/
 .db
+.txt
+_pycache_/
