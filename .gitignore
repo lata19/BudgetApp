@@ -1,0 +1,4 @@
+.venv
+BudgetAppVENV/
+_pycache_/
+.db
