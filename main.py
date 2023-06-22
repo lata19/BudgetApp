@@ -8,6 +8,7 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 
 # SCREENS
+from Screens.Registration import registration_screen
 
 
 class BudgetApp(ctk.CTk):
@@ -15,17 +16,15 @@ class BudgetApp(ctk.CTk):
         super().__init__(fg_color, **kwargs)
         self.font = ctk.CTkFont("Roboto")
         self.geometry("800x600")
-        self.iconbitmap("../Foto/save_money.ico")
+        self.iconbitmap("Foto/save_money.ico")
         self.title("BudgetApp")
         self.resizable(True, True)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.main_frame = ctk.CTkFrame(self, corner_radius=10, fg_color="#333333")
         self.main_frame.grid(column=0, row=0, sticky="nsew", pady=25)
-        self.main_frame.grid_columnconfigure(0, weight=2)
-        self.main_frame.grid_columnconfigure(1, weight=1)
+        self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_rowconfigure(0, weight=1)
-        self.main_frame.grid_rowconfigure(1, weight=5)
         self.create_login_screen()
 
     def clear_main_frame(self):
@@ -40,16 +39,24 @@ class BudgetApp(ctk.CTk):
         Creates login screen on start of the application
         """
         self.clear_main_frame()
+        login_frame = ctk.CTkFrame(self.main_frame)
+        login_frame.grid(column=0, row=0, sticky="nsew")
+        login_frame.grid_columnconfigure(0, weight=2)
+        login_frame.grid_columnconfigure(1, weight=1)
+        login_frame.grid_rowconfigure(0, weight=1)
+        login_frame.grid_rowconfigure(1, weight=5)
         # Language picker
+        self.language_var = ctk.StringVar(value="Hrvatski")
         language_optionmenu = ctk.CTkOptionMenu(
-            self.main_frame,
+            login_frame,
+            variable=self.language_var,
             values=["Hrvatski", "English", "Deutsch"],
             command=self.language_change,
         )
         language_optionmenu.grid(column=0, row=0, padx=25, sticky="w")
 
         # Left frame
-        left_frame = ctk.CTkFrame(self.main_frame, corner_radius=10, fg_color="#333333")
+        left_frame = ctk.CTkFrame(login_frame, corner_radius=10, fg_color="#333333")
         left_frame.grid(column=0, row=1, sticky="nsew")
         left_frame.columnconfigure(0, weight=1)
         left_frame.rowconfigure((0, 1, 2), weight=1)
@@ -66,7 +73,7 @@ class BudgetApp(ctk.CTk):
         )
 
         logo_image = ctk.CTkImage(
-            dark_image=Image.open("../Foto/save_money.png"),
+            dark_image=Image.open("Foto/save_money.png"),
             size=(250, 250),
         )
         logo_label = ctk.CTkLabel(left_frame, image=logo_image, text="")
@@ -106,9 +113,7 @@ class BudgetApp(ctk.CTk):
         )
 
         # Right frame
-        right_frame = ctk.CTkFrame(
-            self.main_frame, corner_radius=10, fg_color="#333333"
-        )
+        right_frame = ctk.CTkFrame(login_frame, corner_radius=10, fg_color="#333333")
         right_frame.grid(column=1, row=1, sticky="nsew")
         right_frame.grid_rowconfigure((0, 2), weight=1)
         right_frame.grid_rowconfigure(1, weight=3)
@@ -142,12 +147,14 @@ class BudgetApp(ctk.CTk):
         )
         password_label.grid(column=1, row=4, padx=10, pady=15, sticky="w")
 
+        # TODO staviti zaštitu na lozinku da se ne vidi
         self.password_entry_var = ctk.StringVar()
         password_entry = ctk.CTkEntry(
             main_login_frame, textvariable=self.password_entry_var, font=(self.font, 14)
         )
         password_entry.grid(column=2, row=4, padx=5, pady=15)
 
+        # TODO napraviti command da se provjeravaju podaci u bazi
         self.login_button_var = ctk.StringVar(value="Prijava")
         login_button = ctk.CTkButton(
             main_login_frame, textvariable=self.login_button_var, font=(self.font, 16)
@@ -180,6 +187,7 @@ class BudgetApp(ctk.CTk):
 
     def create_registration_screen(self):
         self.clear_main_frame()
+        registration_screen.Registration(self, self.main_frame, self.language_var.get())
 
     def language_change(self, language):
         if language == "Hrvatski":
