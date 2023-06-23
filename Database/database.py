@@ -140,4 +140,37 @@ def db_update_user(
 
 # Get all users
 
+
 # Check user for login
+def db_check_user_for_login(username, inserted_password):
+    with Session(bind=db_engine) as session:
+        user = (session.query(User).filter(User.username == username)).one_or_none()
+    if user:
+        inserted_password = inserted_password.encode("utf-8")
+        password = bcrypt.checkpw(inserted_password, user.password)
+        if password:
+            return user
+
+
+# Check for username
+def db_username_check(username):
+    with Session(bind=db_engine) as session:
+        username_exists = (
+            session.query(User).filter(User.username == username).one_or_none()
+        )
+        if username_exists:
+            return None
+
+
+# Check email
+def db_email_check(email):
+    with Session(bind=db_engine) as session:
+        email_exists = session.query(User).filter(User.email == email).one_or_none()
+        if email_exists:
+            return None
+
+
+def db_get_password():
+    with Session(bind=db_engine) as session:
+        user = session.query(User).filter(User.id == 1).one()
+        return user.password

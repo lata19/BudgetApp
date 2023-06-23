@@ -1,6 +1,7 @@
 import datetime as dt
 import random
 import tkinter as tk
+from tkinter import messagebox
 from tkinter import ttk
 from typing import Optional, Tuple, Union
 from Database.database import *
@@ -9,6 +10,7 @@ from PIL import Image, ImageTk
 
 # SCREENS
 from Screens.Registration import registration_screen
+from Screens.Overview import overview_screen
 
 
 class BudgetApp(ctk.CTk):
@@ -123,44 +125,45 @@ class BudgetApp(ctk.CTk):
         main_login_frame.grid(column=0, row=1, padx=15, ipadx=50, ipady=50)
         main_login_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
+        # Login - Title
         self.login_label_var = ctk.StringVar(value="Prijava")
         login_label = ctk.CTkLabel(
             main_login_frame, textvariable=self.login_label_var, font=(self.font, 24)
         )
         login_label.grid(column=1, row=1, columnspan=2, padx=10, pady=10, ipady=25)
 
-        self.username_label_var = ctk.StringVar(value="Korisnicko ime")
-        username_label = ctk.CTkLabel(
-            main_login_frame, textvariable=self.username_label_var, font=(self.font, 16)
+        # Username
+        self.username_entry_var = ctk.StringVar(value="Korisničko ime")
+        self.username_entry = ctk.CTkEntry(
+            main_login_frame,
+            placeholder_text=self.username_entry_var.get(),
+            font=(self.font, 14),
         )
-        username_label.grid(column=1, row=3, padx=10, pady=15, sticky="w")
+        self.username_entry.grid(column=1, row=2, columnspan=2, padx=5, pady=15)
 
-        self.username_entry_var = ctk.StringVar()
-        username_entry = ctk.CTkEntry(
-            main_login_frame, textvariable=self.username_entry_var, font=(self.font, 14)
+        # Password
+        # TODO dodati ikonu da se može prikazati lozinka
+        self.password_entry_var = ctk.StringVar(value="Lozinka")
+        self.password_entry = ctk.CTkEntry(
+            main_login_frame,
+            placeholder_text=self.password_entry_var.get(),
+            font=(self.font, 14),
+            show="*",
         )
-        username_entry.grid(column=2, row=3, padx=5, pady=15)
+        self.password_entry.grid(column=1, row=3, columnspan=2, padx=5, pady=15)
 
-        self.password_label_var = ctk.StringVar(value="Lozinka")
-        password_label = ctk.CTkLabel(
-            main_login_frame, textvariable=self.password_label_var, font=(self.font, 16)
-        )
-        password_label.grid(column=1, row=4, padx=10, pady=15, sticky="w")
-
-        # TODO staviti zaštitu na lozinku da se ne vidi
-        self.password_entry_var = ctk.StringVar()
-        password_entry = ctk.CTkEntry(
-            main_login_frame, textvariable=self.password_entry_var, font=(self.font, 14)
-        )
-        password_entry.grid(column=2, row=4, padx=5, pady=15)
-
+        # Login button
         # TODO napraviti command da se provjeravaju podaci u bazi
         self.login_button_var = ctk.StringVar(value="Prijava")
         login_button = ctk.CTkButton(
-            main_login_frame, textvariable=self.login_button_var, font=(self.font, 16)
+            main_login_frame,
+            textvariable=self.login_button_var,
+            font=(self.font, 16),
+            command=self.login_check,
         )
-        login_button.grid(column=1, row=5, columnspan=2, padx=10, pady=40, ipadx=10)
+        login_button.grid(column=1, row=4, columnspan=2, padx=10, pady=40, ipadx=10)
 
+        # Registration
         self.registration_label_var = ctk.StringVar(
             value="Nemaš račun?\nRegistriraj se"
         )
@@ -175,15 +178,22 @@ class BudgetApp(ctk.CTk):
             "<Button-1>", lambda e: self.create_registration_screen()
         )
 
-        # self.main_frame.update()
-        # left_frame.configure(
-        #     height=self.main_frame.winfo_height(),
-        #     width=self.main_frame.winfo_width() / 2,
-        # )
-        # right_frame.configure(
-        #     height=self.main_frame.winfo_height(),
-        #     width=self.main_frame.winfo_width() / 2,
-        # )
+    def login_check(self):
+        """
+        Check for user in database. If user exists then he will be logedin in application.
+        If user doesn't exist, the message will appear on screen.
+        """
+        user = db_check_user_for_login(
+            self.username_entry.get(), self.password_entry.get()
+        )
+        if user:
+            self.clear_main_frame()
+            overview_screen.Overview(self, self.main_frame, self.language_var.get())
+        else:
+            messagebox.showerror(
+                title="Nesupješna prijava",
+                message="Pogrešno korisničko ime i/ili lozinka",
+            )
 
     def create_registration_screen(self):
         self.clear_main_frame()
@@ -194,28 +204,30 @@ class BudgetApp(ctk.CTk):
             self.title("BudgetApp")
             self.app_name_var.set("Budget App")
             self.login_label_var.set("Prijava")
-            self.username_label_var.set("Korisničko ime")
-            self.password_label_var.set("Lozinka")
+            self.username_entry_var.set("Korisničko ime")
+            self.password_entry_var.set("Lozinka")
             self.login_button_var.set("Prijava")
             self.registration_label_var.set("Nemaš račun?\nRegistriraj se")
         elif language == "English":
             self.title("BudgetApp")
             self.app_name_var.set("Budget App")
             self.login_label_var.set("Login")
-            self.username_label_var.set("Username")
-            self.password_label_var.set("Password")
+            self.username_entry_var.set("Username")
+            self.password_entry_var.set("Password")
             self.login_button_var.set("Login")
             self.registration_label_var.set("Don't have an account?\nRegister now")
         elif language == "Deutsch":
             self.title("Sparen App")
             self.app_name_var.set("Sparen App")
             self.login_label_var.set("Anmelden")
-            self.username_label_var.set("Benutzername")
-            self.password_label_var.set("Passwort")
+            self.username_entry_var.set("Benutzername")
+            self.password_entry_var.set("Passwort")
             self.login_button_var.set("Anmalden")
             self.registration_label_var.set(
                 "Du hast noch kein Konto?\nRegistrieren Sie sich jetzt"
             )
+        self.username_entry.configure(placeholder_text=self.username_entry_var.get())
+        self.password_entry.configure(placeholder_text=self.password_entry_var.get())
 
 
 if __name__ == "__main__":
