@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 
 # SCREENS
 from Screens.Registration import registration_screen
-from Screens.Overview import overview_screen
+from Screens.Overview import start_screen
 
 
 class BudgetApp(ctk.CTk):
@@ -27,7 +27,8 @@ class BudgetApp(ctk.CTk):
         self.main_frame.grid(column=0, row=0, sticky="nsew", pady=25)
         self.main_frame.grid_columnconfigure(0, weight=1)
         self.main_frame.grid_rowconfigure(0, weight=1)
-        self.create_login_screen()
+        self.language_var = ctk.StringVar(value="Hrvatski")
+        self.create_login_screen(self.language_var)
 
     def clear_main_frame(self):
         """
@@ -36,7 +37,7 @@ class BudgetApp(ctk.CTk):
         for frame in self.main_frame.winfo_children():
             frame.destroy()
 
-    def create_login_screen(self):
+    def create_login_screen(self, language):
         """
         Creates login screen on start of the application
         """
@@ -48,14 +49,14 @@ class BudgetApp(ctk.CTk):
         login_frame.grid_rowconfigure(0, weight=1)
         login_frame.grid_rowconfigure(1, weight=5)
         # Language picker
-        self.language_var = ctk.StringVar(value="Hrvatski")
-        language_optionmenu = ctk.CTkOptionMenu(
+        # self.language_var = ctk.StringVar(value="Hrvatski")
+        self.language_optionmenu = ctk.CTkOptionMenu(
             login_frame,
             variable=self.language_var,
-            values=["Hrvatski", "English", "Deutsch"],
+            values=["Hrvatski", "Engleski", "Njemački"],
             command=self.language_change,
         )
-        language_optionmenu.grid(column=0, row=0, padx=25, sticky="w")
+        self.language_optionmenu.grid(column=0, row=0, padx=25, sticky="w")
 
         # Left frame
         left_frame = ctk.CTkFrame(login_frame, corner_radius=10, fg_color="#333333")
@@ -140,6 +141,7 @@ class BudgetApp(ctk.CTk):
             font=(self.font, 14),
         )
         self.username_entry.grid(column=1, row=2, columnspan=2, padx=5, pady=15)
+        self.username_entry.bind("<Return>", lambda e: self.login_check())
 
         # Password
         # TODO dodati ikonu da se može prikazati lozinka
@@ -151,6 +153,7 @@ class BudgetApp(ctk.CTk):
             show="*",
         )
         self.password_entry.grid(column=1, row=3, columnspan=2, padx=5, pady=15)
+        self.password_entry.bind("<Return>", lambda e: self.login_check())
 
         # Login button
         # TODO napraviti command da se provjeravaju podaci u bazi
@@ -177,6 +180,7 @@ class BudgetApp(ctk.CTk):
         registration_label.bind(
             "<Button-1>", lambda e: self.create_registration_screen()
         )
+        self.language_change(language)
 
     def login_check(self):
         """
@@ -188,7 +192,7 @@ class BudgetApp(ctk.CTk):
         )
         if user:
             self.clear_main_frame()
-            overview_screen.Overview(self, self.main_frame, self.language_var.get())
+            start_screen.StartScreen(self, self.main_frame, self.language_var.get())
         else:
             messagebox.showerror(
                 title="Nesupješna prijava",
@@ -197,10 +201,12 @@ class BudgetApp(ctk.CTk):
 
     def create_registration_screen(self):
         self.clear_main_frame()
-        registration_screen.Registration(self, self.main_frame, self.language_var.get())
+        registration_screen.RegistrationScreen(
+            self, self.main_frame, self.language_var.get()
+        )
 
     def language_change(self, language):
-        if language == "Hrvatski":
+        if language == "Hrvatski" or language == "Croatian" or language == "Kroatisch":
             self.title("BudgetApp")
             self.app_name_var.set("Budget App")
             self.login_label_var.set("Prijava")
@@ -208,7 +214,11 @@ class BudgetApp(ctk.CTk):
             self.password_entry_var.set("Lozinka")
             self.login_button_var.set("Prijava")
             self.registration_label_var.set("Nemaš račun?\nRegistriraj se")
-        elif language == "English":
+            self.language_optionmenu.configure(
+                values=["Hrvatski", "Engleski", "Njemački"]
+            )
+            self.language_optionmenu.set("Hrvatski")
+        elif language == "Engleski" or language == "English" or language == "Englisch":
             self.title("BudgetApp")
             self.app_name_var.set("Budget App")
             self.login_label_var.set("Login")
@@ -216,7 +226,9 @@ class BudgetApp(ctk.CTk):
             self.password_entry_var.set("Password")
             self.login_button_var.set("Login")
             self.registration_label_var.set("Don't have an account?\nRegister now")
-        elif language == "Deutsch":
+            self.language_optionmenu.configure(values=["Croatian", "English", "German"])
+            self.language_optionmenu.set("English")
+        elif language == "Deutsch" or language == "German" or language == "Njemački":
             self.title("Sparen App")
             self.app_name_var.set("Sparen App")
             self.login_label_var.set("Anmelden")
@@ -226,6 +238,10 @@ class BudgetApp(ctk.CTk):
             self.registration_label_var.set(
                 "Du hast noch kein Konto?\nRegistrieren Sie sich jetzt"
             )
+            self.language_optionmenu.configure(
+                values=["Kroatisch", "Englisch", "Deutsch"]
+            )
+            self.language_optionmenu.set("Deutsch")
         self.username_entry.configure(placeholder_text=self.username_entry_var.get())
         self.password_entry.configure(placeholder_text=self.password_entry_var.get())
 
