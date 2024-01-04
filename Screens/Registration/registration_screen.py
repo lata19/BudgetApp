@@ -43,19 +43,6 @@ class RegistrationScreen:
             self.admin_var.set("Administrator:")
             self.active_var.set("Active")
             self.register_button_var.set("Register")
-        elif language == "Deutsch":
-            self.back_button_var.set("Zurück")
-            self.first_name_var.set("Vorname:")
-            self.last_name_var.set("Nachname:")
-            self.username_var.set("Benutzername:")
-            self.password_var.set("Passwort:")
-            self.email_var.set("E-Mail-Addresse:")
-            self.email_notifications_var.set(
-                "Möchten Sie Benachrichtigungen per E-Mail erhalten?"
-            )
-            self.admin_var.set("Administrator/in:")
-            self.active_var.set("Aktiv:")
-            self.register_button_var.set("Registrieren")
 
     def create_registration_screen(self):
         registration_frame = ctk.CTkFrame(self.parent_frame)
@@ -68,7 +55,7 @@ class RegistrationScreen:
         language_optionmenu = ctk.CTkOptionMenu(
             registration_frame,
             variable=self.language_var,
-            values=["Hrvatski", "English", "Deutsch"],
+            values=["Hrvatski", "English"],
             command=self.language_change,
         )
         language_optionmenu.grid(column=0, row=0, padx=25, pady=25, sticky="w")
@@ -173,7 +160,6 @@ class RegistrationScreen:
             if (
                 self.language_var.get() == "Hrvatski"
                 or self.language_var.get() == "Croatian"
-                or self.language_var.get() == "Kroatisch"
             ):
                 messagebox.showinfo(
                     title="Uspješno!",
@@ -182,26 +168,15 @@ class RegistrationScreen:
             if (
                 self.language_var.get() == "Engleski"
                 or self.language_var.get() == "English"
-                or self.language_var.get() == "Englisch"
             ):
                 messagebox.showinfo(
                     title="Successfully!",
                     message="The user has been successfully added to the database.",
                 )
-            if (
-                self.language_var.get() == "Njemački"
-                or self.language_var.get() == "German"
-                or self.language_var.get() == "Deutsch"
-            ):
-                messagebox.showinfo(
-                    title="Erfolgreich!",
-                    message="Der Benutzer wurde erfolgreich zur Datenbank hinzugefügt.",
-                )
         else:
             if (
                 self.language_var.get() == "Hrvatski"
                 or self.language_var.get() == "Croatian"
-                or self.language_var.get() == "Kroatisch"
             ):
                 messagebox.showerror(
                     title="Postojeći korisnik!",
@@ -210,18 +185,8 @@ class RegistrationScreen:
             if (
                 self.language_var.get() == "Engleski"
                 or self.language_var.get() == "English"
-                or self.language_var.get() == "Englisch"
             ):
                 messagebox.showerror(
                     title="Existing user!",
                     message="The user already exists in the database.",
-                )
-            if (
-                self.language_var.get() == "Njemački"
-                or self.language_var.get() == "German"
-                or self.language_var.get() == "Deutsch"
-            ):
-                messagebox.showerror(
-                    title="Existierender Benutzer!",
-                    message="Der Benutzer existiert bereits in der Datenbank.",
                 )

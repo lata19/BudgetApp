@@ -37,7 +37,7 @@ class StartScreen:
         self.language_optionmenu = ctk.CTkOptionMenu(
             start_screen_frame,
             variable=self.language_var,
-            values=["Hrvatski", "Engleski", "Njemački"],
+            values=["Hrvatski", "Engleski"],
             command=self.language_change,
         )
         self.language_optionmenu.grid(column=0, row=3, padx=25, sticky="w")
@@ -72,29 +72,16 @@ class StartScreen:
 
     def segmented_button_callback(self, segmented_button_var):
         self.clear_information_frame()
-        if (
-            segmented_button_var == "Pregled"
-            or segmented_button_var == "Overview"
-            or segmented_button_var == "Überblick"
-        ):
+        if segmented_button_var == "Pregled" or segmented_button_var == "Overview":
             Overview(self.information_frame, self.language_var)
         elif (
             segmented_button_var == "Transakcije"
             or segmented_button_var == "Transactions"
-            or segmented_button_var == "Transaktionen"
         ):
             pass
-        elif (
-            segmented_button_var == "Kartice"
-            or segmented_button_var == "Cards"
-            or segmented_button_var == "Karten"
-        ):
+        elif segmented_button_var == "Kartice" or segmented_button_var == "Cards":
             pass
-        elif (
-            segmented_button_var == "Trgovine"
-            or segmented_button_var == "Markets"
-            or segmented_button_var == "Geschäfte"
-        ):
+        elif segmented_button_var == "Trgovine" or segmented_button_var == "Markets":
             pass
 
 

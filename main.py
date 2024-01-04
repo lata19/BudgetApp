@@ -53,7 +53,7 @@ class BudgetApp(ctk.CTk):
         self.language_optionmenu = ctk.CTkOptionMenu(
             login_frame,
             variable=self.language_var,
-            values=["Hrvatski", "Engleski", "Njemački"],
+            values=["Hrvatski", "Engleski"],
             command=self.language_change,
         )
         self.language_optionmenu.grid(column=0, row=0, padx=25, sticky="w")
@@ -228,20 +228,6 @@ class BudgetApp(ctk.CTk):
             self.registration_label_var.set("Don't have an account?\nRegister now")
             self.language_optionmenu.configure(values=["Croatian", "English", "German"])
             self.language_optionmenu.set("English")
-        elif language == "Deutsch" or language == "German" or language == "Njemački":
-            self.title("Sparen App")
-            self.app_name_var.set("Sparen App")
-            self.login_label_var.set("Anmelden")
-            self.username_entry_var.set("Benutzername")
-            self.password_entry_var.set("Passwort")
-            self.login_button_var.set("Anmalden")
-            self.registration_label_var.set(
-                "Du hast noch kein Konto?\nRegistrieren Sie sich jetzt"
-            )
-            self.language_optionmenu.configure(
-                values=["Kroatisch", "Englisch", "Deutsch"]
-            )
-            self.language_optionmenu.set("Deutsch")
         self.username_entry.configure(placeholder_text=self.username_entry_var.get())
         self.password_entry.configure(placeholder_text=self.password_entry_var.get())
 
